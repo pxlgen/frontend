@@ -1,0 +1,30 @@
+{
+  "name": "@muralis/react-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.3.11",
+    "@popperjs/core": "^2.9.1",
+    "autoprefixer": "^10.2.4",
+    "next": "^10.0.7",
+    "postcss": "^8.2.6",
+    "react": "^17.0.1",
+    "react-dom": "17.0.1",
+    "react-icons": "^4.2.0",
+    "react-popover": "^0.5.10",
+    "react-popper": "^2.2.4",
+    "react-zoom-pan-pinch": "^1.6.1",
+    "rsuite": "^4.9.2",
+    "tailwindcss": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.31",
+    "@types/react": "^17.0.2",
+    "typescript": "^4.2.2"
+  }
+}
