@@ -1,6 +1,6 @@
-body {
+/* body {
   background-color: #232125;
-}
+} */
 
 .crisp-rendering {
   image-rendering: -moz-crisp-edges;
@@ -31,15 +31,18 @@ body {
   height: 1000px;
 }
 
-.Popover-body {
+.wallet .Popover-body {
   display: inline-flex;
-  flex-direction: column;
   padding: 1rem 1rem;
-  background: rgba(229, 231, 235);
-  color: white;
+  width: 400px;
+  background: white;
   border-radius: 0.3rem;
 }
 
 .Popover-tipShape {
   fill: rgba(229, 231, 235);
+}
+
+.wallet .Popover-tip {
+  display: none;
 }

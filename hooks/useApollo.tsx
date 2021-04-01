@@ -1,13 +1,13 @@
 import { useMemo } from "react";
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
 
-let apolloClient;
+let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
-      uri: "http://127.0.0.1:8000/subgraphs/name/muralis/muralis-subgraph",
+      uri: process.env.NEXT_PUBLIC_SUBGRAPH_URI,
     }),
     cache: new InMemoryCache(),
   });
@@ -23,6 +23,7 @@ export function initializeApollo(initialState = null) {
     const existingCache = _apolloClient.extract();
     // Restore the cache using the data passed from getStaticProps/getServerSideProps
     // combined with the existing cached data
+    // @ts-ignore
     _apolloClient.cache.restore({ ...existingCache, ...initialState });
   }
   // For SSG and SSR always create a new Apollo Client
@@ -32,6 +33,7 @@ export function initializeApollo(initialState = null) {
   return _apolloClient;
 }
 
+//@ts-ignore
 export function useApollo(initialState) {
   const store = useMemo(() => initializeApollo(initialState), [initialState]);
   return store;

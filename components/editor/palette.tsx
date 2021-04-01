@@ -34,7 +34,9 @@ export default function Palette({ activeColour, setColour }: Props): JSX.Element
         <span
           key={x}
           onClick={() => setColour(x)}
-          className={`box-border h-14 w-14 float-left cursor-pointer ${activeColour == x ? "border-4 border-blue-500" : ""}`}
+          className={`box-border h-14 w-14 float-left cursor-pointer ${
+            activeColour == x ? "border-2 border-blue-500 transform scale-125" : ""
+          }`}
           style={{ backgroundColor: `${x}` }}
         ></span>
       ))}

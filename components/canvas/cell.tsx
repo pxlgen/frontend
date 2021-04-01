@@ -1,30 +1,43 @@
 import { useRef, useState, useEffect } from "react";
 import Popover from "react-popover";
+import Link from "next/link";
+import axios from "axios";
+import { Cell } from "../../types";
 
 const CANVAS_SIZE = 1000;
 const PIXELS = 50; // 50 x 50 grid
-let data = [];
-let blankCanvas = [...Array(PIXELS)].map((e) => Array(PIXELS).fill("#ffffffff"));
+let data: string[][] = [];
+let blankCanvas: string[][] = [...Array(PIXELS)].map((e) => Array(PIXELS).fill("#ffffffff"));
 
-export default function Cell() {
+interface CellProps {
+  index: number;
+  cell: Cell;
+}
+
+export default function CanvasCell({ index, cell }: CellProps) {
   const [open, setOpen] = useState<boolean>(false);
-  const [clickPosition, setClickPosition] = useState<{ x: number; y: number }>();
+  const [clickPosition, setClickPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [ctx, setCtx] = useState<CanvasRenderingContext2D>();
   const canvas = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const ctx = canvas.current.getContext("2d");
+    let ctx: CanvasRenderingContext2D;
+    ctx = canvas.current!.getContext("2d") as CanvasRenderingContext2D;
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    setCtx(canvas.current.getContext("2d"));
+    setCtx(ctx);
   }, []);
 
   // once context is loaded we can redraw the canvas
   useEffect(() => {
+    async function canvasData() {
+      if (cell) {
+        data = cell.properties.length > 0 ? cell.properties : blankCanvas;
+        redraw();
+      }
+    }
     if (ctx) {
-      const item = localStorage.getItem("canvas-data");
-      data = item ? JSON.parse(item) : blankCanvas;
-      redraw();
+      canvasData();
     }
   }, [ctx]);
 
@@ -46,10 +59,10 @@ export default function Cell() {
     }
   }
 
-  const mouseDownCoords = (e) => {
+  const mouseDownCoords = (e: React.MouseEvent): void => {
     setClickPosition({ x: e.pageX, y: e.pageY });
   };
-  const clickOrDrag = (e) => {
+  const clickOrDrag = (e: React.MouseEvent): void => {
     // if mouse moves > 6 pixels (i.e drag) do nothing
     if (
       e.pageX < clickPosition.x + 6 &&
@@ -63,7 +76,7 @@ export default function Cell() {
 
   return (
     <div id="pop">
-      <Popover isOpen={open} body={<PopoverContent />} onOuterAction={() => setOpen(false)}>
+      <Popover isOpen={open} body={<PopoverContent index={index} />} onOuterAction={() => setOpen(false)}>
         <div
           onMouseDown={mouseDownCoords}
           onMouseUp={clickOrDrag}
@@ -82,13 +95,19 @@ export default function Cell() {
   );
 }
 
-const PopoverContent = () => {
+interface PopoverContentProps {
+  index: number;
+}
+
+const PopoverContent = ({ index }: PopoverContentProps) => {
   return (
     <div className="bg-gray-200 text-black">
       <p>This is a default Popover </p>
       <p>Content</p>
       <p>
-        <a href="https://google.com">link</a>
+        <Link href={`/token/${index}`}>
+          <a>View Token</a>
+        </Link>
       </p>
     </div>
   );

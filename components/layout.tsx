@@ -1,6 +1,11 @@
+import { ReactNode } from "react";
 import Header from "./header";
 
-export default function Layout({ children }): JSX.Element {
+interface Props {
+  children: ReactNode;
+}
+
+export default function Layout({ children }: Props): JSX.Element {
   return (
     <div>
       <Header />

@@ -1,7 +1,8 @@
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch/dist";
 import Cell from "./cell";
+import { useEffect, useState } from "react";
+import { useAllCells } from "../../hooks";
 
-// let coords = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T"];
 let coords = [
   "01",
   "02",
@@ -26,10 +27,17 @@ let coords = [
 ];
 
 export default function Canvas(): JSX.Element {
-  var rows = [];
-  for (var i = 0; i < 400; i++) {
-    rows.push(<Cell key={i} />);
-  }
+  const { cells, loading, error } = useAllCells();
+  const [cellComponents, setCellComponents] = useState<JSX.Element[]>();
+
+  useEffect(() => {
+    if (cells) {
+      setCellComponents(cells.map((c, i) => <Cell key={i} index={c.index} cell={c} />));
+    }
+  }, [cells]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="h-auto w-auto bg-gray-200">
@@ -41,16 +49,12 @@ export default function Canvas(): JSX.Element {
         doubleClick={{ disabled: false }}
       >
         {({
+          // @ts-ignore
           zoomIn,
+          // @ts-ignore
           zoomOut,
+          // @ts-ignore
           resetTransform,
-          setDefaultState,
-          positionX,
-          positionY,
-          scale,
-          previousScale,
-          options: { limitToBounds, transformEnabled, disabled },
-          ...rest
         }) => (
           <div>
             <div className="flex shadow-xl">
@@ -77,16 +81,20 @@ export default function Canvas(): JSX.Element {
               <div className="grid-container">
                 <div className="grid grid-flow-col x-coords text-gray-400">
                   {coords.map((x) => (
-                    <span className="m-auto">{x}</span>
+                    <span key={x} style={{ width: 50 }} className="m-auto text-center">
+                      {x}
+                    </span>
                   ))}
                 </div>
                 <div className="float-left grid grid-flow-row y-coords text-gray-400">
                   {coords.map((x) => (
-                    <span className="m-auto">{x}</span>
+                    <span key={x} style={{ height: 50, paddingTop: 13 }} className="m-auto">
+                      {x}
+                    </span>
                   ))}
                 </div>
 
-                <div className="float-left canvas-container">{rows}</div>
+                <div className="float-left canvas-container">{cellComponents}</div>
               </div>
             </TransformComponent>
           </div>

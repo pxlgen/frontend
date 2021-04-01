@@ -1,12 +1,28 @@
+import dynamic from "next/dynamic";
+import Link from "next/link";
+const WalleButton = dynamic(
+  () => {
+    return import("./wallet");
+  },
+  { ssr: false }
+);
+
 export default function Header(): JSX.Element {
   return (
-    <div className="text-gray-100 mx-auto bg-gray-900 p-2 shadow-lg">
+    <div className="text-gray-900 mx-auto bg-gray-100 p-2 shadow-md">
       <nav className="flex justify-between">
-        <div className="text-gray-100 mt-1 text-2xl">
-          <a href="#">NFT Canvas</a>
+        <div className="mx-4 text-gray-900 mt-1 text-2xl">
+          <Link href="/">
+            <a>PxlGen</a>
+          </Link>
         </div>
-        <div className="float-right">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Connect</button>
+        <div className="w-full float-left m-auto pl-4 text-xl ">
+          <Link href="/canvas">
+            <a className="hover:text-gray-500">Canvas</a>
+          </Link>
+        </div>
+        <div className="float-right mx-4">
+          <WalleButton />
         </div>
       </nav>
     </div>
