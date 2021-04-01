@@ -1,8 +1,10 @@
 import { useRef, useState, useEffect } from "react";
 import Popover from "react-popover";
-import Link from "next/link";
-import axios from "axios";
+import { Link } from "../utils/link";
 import { Cell } from "../../types";
+import { getCoordinates } from "../../utils";
+import { ExternalLink } from "../utils/link";
+import { getExplorerAddressLink, shortenAddress, useEthers } from "@usedapp/core";
 
 const CANVAS_SIZE = 1000;
 const PIXELS = 50; // 50 x 50 grid
@@ -76,7 +78,7 @@ export default function CanvasCell({ index, cell }: CellProps) {
 
   return (
     <div id="pop">
-      <Popover isOpen={open} body={<PopoverContent index={index} />} onOuterAction={() => setOpen(false)}>
+      <Popover isOpen={open} body={<PopoverContent cell={cell} />} onOuterAction={() => setOpen(false)}>
         <div
           onMouseDown={mouseDownCoords}
           onMouseUp={clickOrDrag}
@@ -85,7 +87,7 @@ export default function CanvasCell({ index, cell }: CellProps) {
         >
           <canvas
             ref={canvas}
-            className={`crisp-rendering ${open ? "border-black border" : ""}`}
+            className={`crisp-rendering ${open ? "border-gray-400 border" : ""}`}
             width={50}
             height={50}
           ></canvas>
@@ -96,19 +98,34 @@ export default function CanvasCell({ index, cell }: CellProps) {
 }
 
 interface PopoverContentProps {
-  index: number;
+  cell: Cell;
 }
 
-const PopoverContent = ({ index }: PopoverContentProps) => {
+const PopoverContent = ({ cell }: PopoverContentProps) => {
+  const { chainId } = useEthers();
+  const { x, y } = getCoordinates(cell.index);
+  if (chainId) console.log(getExplorerAddressLink(cell.owner, chainId));
+
   return (
-    <div className="bg-gray-200 text-black">
-      <p>This is a default Popover </p>
-      <p>Content</p>
-      <p>
-        <Link href={`/token/${index}`}>
-          <a>View Token</a>
-        </Link>
-      </p>
+    <div className="w-60 p-2 bg-gray-100 text-black border border-gray-400 rounded-md">
+      <div className="font-semibold border-b p-2">{cell.name}</div>
+      <div className="p-2">
+        <span className="font-medium">Coordinates: </span>📍 ({x}, {y})
+      </div>
+      {chainId && cell.owner != "0x" ? (
+        <div className="p-2">
+          <span className="font-medium">Owner: </span>
+          <ExternalLink href={getExplorerAddressLink(cell.owner, chainId)}>{shortenAddress(cell.owner)}</ExternalLink>
+        </div>
+      ) : (
+        <div className="p-2">
+          <span className="font-medium">Status: </span>
+          <ExternalLink href="https://opensea.io">Still Available</ExternalLink>
+        </div>
+      )}
+      <div className="w-full text-center mt-4">
+        <Link href={`/token/${cell.index}`}>View Cell</Link>
+      </div>
     </div>
   );
 };

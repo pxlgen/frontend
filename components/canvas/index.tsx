@@ -2,7 +2,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch/dist"
 import Cell from "./cell";
 import { useEffect, useState } from "react";
 import { useAllCells } from "../../hooks";
-
+import Controls from "./controls";
 let coords = [
   "01",
   "02",
@@ -34,6 +34,7 @@ export default function Canvas(): JSX.Element {
     if (cells) {
       setCellComponents(cells.map((c, i) => <Cell key={i} index={c.index} cell={c} />));
     }
+    document.body.style.overflow = "hidden";
   }, [cells]);
 
   if (loading) return <div>Loading...</div>;
@@ -57,26 +58,7 @@ export default function Canvas(): JSX.Element {
           resetTransform,
         }) => (
           <div>
-            <div className="flex shadow-xl">
-              <div
-                onClick={zoomIn}
-                className="bg-gray-300 p-2 ml-3  mt-1 mb-1 shadow-inner rounded-lg hover:bg-gray-500 cursor-pointer"
-              >
-                Zoom In
-              </div>
-              <div
-                onClick={zoomOut}
-                className="bg-gray-300 p-2 ml-3  mt-1 mb-1 shadow-inner rounded-lg hover:bg-gray-500 cursor-pointer"
-              >
-                Zoom Out
-              </div>
-              <div
-                onClick={resetTransform}
-                className="bg-gray-300 p-2 ml-3 mt-1 mb-1 shadow-inner rounded-lg hover:bg-gray-500 cursor-pointer"
-              >
-                Reset
-              </div>
-            </div>
+            <Controls zoomIn={(e) => zoomIn(e)} zoomOut={(e) => zoomOut(e)} resetTransform={(e) => resetTransform(e)} />
             <TransformComponent>
               <div className="grid-container">
                 <div className="grid grid-flow-col x-coords text-gray-400">

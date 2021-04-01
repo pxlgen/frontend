@@ -40,7 +40,8 @@
 }
 
 .Popover-tipShape {
-  fill: rgba(229, 231, 235);
+  fill: #f3f4f6;
+  display: none;
 }
 
 .wallet .Popover-tip {

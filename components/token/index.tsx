@@ -1,8 +1,7 @@
-import Layout from "../layout";
 import { useEthers, shortenAddress, getExplorerAddressLink } from "@usedapp/core";
 import { useSingleCell } from "../../hooks";
 import Image from "next/image";
-import Link from "next/link";
+import { ExternalLink, Link } from "../utils/link";
 
 export default function Token(): JSX.Element {
   const { chainId } = useEthers();
@@ -19,20 +18,43 @@ export default function Token(): JSX.Element {
           </div>
         </div>
         <div className="col-span-2 md:col-span-1">
-          <div className="text-2xl mb-5 font-medium">{cell.name}</div>
-          <div>{cell.description}</div>
-          <div>
-            <Link href={`/token/editor/${cell.index}`}>
-              <a>Edit</a>
-            </Link>
-          </div>
-          <div>
-            <span>Owner: </span>
-            {cell.owner != "0x" && (
-              <a className="text-blue-400 hover:underline" href={`${getExplorerAddressLink(cell.owner, chainId)}`}>
-                {shortenAddress(cell?.owner)}
-              </a>
+          <div className="w-3/4">
+            <div className="text-2xl mb-5 font-medium border-b p-2">{cell.name}</div>
+            <div className="p-2">
+              <span className="font-medium">Description: </span>
+              {cell.description}
+            </div>
+            {chainId && cell.owner != "0x" ? (
+              <div className="p-2">
+                <span className="font-medium">Owner: </span>
+                <ExternalLink href={getExplorerAddressLink(cell.owner, chainId)}>
+                  {shortenAddress(cell.owner)}
+                </ExternalLink>
+              </div>
+            ) : (
+              <div className="p-2">
+                <span className="font-medium">Status: </span>
+                <ExternalLink href="https://opensea.io">Still Available</ExternalLink>
+              </div>
             )}
+            <div className="w-full flex">
+              <div className="p-2">
+                <Link href={`/token/editor/${cell.index}`}>
+                  <div className=" shadow-sm w-28 py-2 px-4 border border-blue-300 rounded-md text-blue-500 text-center hover:bg-blue-200">
+                    Editor
+                  </div>
+                </Link>
+              </div>
+              <div className="p-2">
+                <a href="https://opensea.io/" title="Buy on OpenSea" target="_blank">
+                  <img
+                    className="border border-gray-300 rounded-md w-32 shadow-sm"
+                    src="https://storage.googleapis.com/opensea-static/opensea-brand/buy-button-white.png"
+                    alt="Buy on OpenSea badge"
+                  />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
