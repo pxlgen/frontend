@@ -41,9 +41,9 @@ export function useSingleCell() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (data?.cells.length && baseURI) {
-        const result = await axios(baseURI + data.cells[0].ipfsHash);
-        const cellToken: CellToken = data?.cells[0];
+      if (data?.tokens.length && baseURI) {
+        const result = await axios(baseURI + data.tokens[0].ipfsHash);
+        const cellToken: CellToken = data?.tokens[0];
         const metadata: CellMetadata = result.data;
         setCell({ ...cellToken, ...metadata });
       }

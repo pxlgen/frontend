@@ -34,11 +34,13 @@ export function getDefaultCell(index: number): Cell {
     id: "0x00",
     index: index,
     ipfsHash: `QmbJbiKnRhfZmTQU6Uh8jHPfVGJ2Uvj4Gu6QiwKJShcnGP/${index}.json`,
-    owner: "0x",
     name: `PxlGen Cell ${formattedIndex}`,
     description: `This Cell is ${formattedIndex} of the 400 which make up the PxlGen canvas. This Cells coordinates are (${x}, ${y})`,
     image: `http://localhost:3000/images/${index}.png`,
     external_url: `http://localhost:3000/token/${index}`,
     properties: [],
+    createdAt: 0,
+    type: "Cell",
+    owner: { id: "0x", totalOwned: 0, tokens: [] },
   };
 }

@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 interface CellData {
-  cells: CellToken[];
+  tokens: CellToken[];
 }
 
 interface CellVars {
@@ -10,11 +10,14 @@ interface CellVars {
 
 const SINGLE_CELL_QUERY = gql`
   query Cell($index: Int!) {
-    cells(where: { index: $index }) {
+    tokens(where: { index: $index }) {
       id
-      owner
       ipfsHash
       index
+      type
+      owner {
+        id
+      }
     }
   }
 `;

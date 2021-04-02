@@ -24,11 +24,11 @@ export default function Token(): JSX.Element {
               <span className="font-medium">Description: </span>
               {cell.description}
             </div>
-            {chainId && cell.owner != "0x" ? (
+            {chainId && cell.owner.id != "0x" ? (
               <div className="p-2">
                 <span className="font-medium">Owner: </span>
-                <ExternalLink href={getExplorerAddressLink(cell.owner, chainId)}>
-                  {shortenAddress(cell.owner)}
+                <ExternalLink href={getExplorerAddressLink(cell.owner.id, chainId)}>
+                  {shortenAddress(cell.owner.id)}
                 </ExternalLink>
               </div>
             ) : (

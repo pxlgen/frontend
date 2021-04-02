@@ -1,20 +1,23 @@
 import { gql } from "@apollo/client";
 
 interface CellData {
-  cells: CellToken[];
+  tokens: CellToken[];
 }
 
 interface CellVars {
-  index: number | undefined;
+  type: string;
 }
 
 const ALL_CELLS_QUERY = gql`
   query {
-    cells {
+    tokens(where: { type: "Cell" }) {
       id
-      owner
       ipfsHash
       index
+      type
+      owner {
+        id
+      }
     }
   }
 `;

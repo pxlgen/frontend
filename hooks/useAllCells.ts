@@ -23,7 +23,7 @@ export function useAllCells() {
 
         for (let i = 0; i < 400; i++) {
           const index = i + 1;
-          let cell: CellToken | undefined = data?.cells.find((item) => item.index == index);
+          let cell: CellToken | undefined = data?.tokens.find((item) => item.index == index);
           if (cell) {
             const result = await axios(baseURI + cell.ipfsHash);
             const metadata: CellMetadata = result.data;

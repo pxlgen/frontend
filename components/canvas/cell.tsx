@@ -103,7 +103,7 @@ interface PopoverContentProps {
 const PopoverContent = ({ cell }: PopoverContentProps) => {
   const { chainId } = useEthers();
   const { x, y } = getCoordinates(cell.index);
-  if (chainId) console.log(getExplorerAddressLink(cell.owner, chainId));
+  if (chainId) console.log(getExplorerAddressLink(cell.owner.id, chainId));
 
   return (
     <div className="w-60 p-2 bg-gray-100 text-black border border-gray-400 rounded-md">
@@ -111,10 +111,12 @@ const PopoverContent = ({ cell }: PopoverContentProps) => {
       <div className="p-2">
         <span className="font-medium">Coordinates: </span>📍 ({x}, {y})
       </div>
-      {chainId && cell.owner != "0x" ? (
+      {chainId && cell.owner.id != "0x" ? (
         <div className="p-2">
           <span className="font-medium">Owner: </span>
-          <ExternalLink href={getExplorerAddressLink(cell.owner, chainId)}>{shortenAddress(cell.owner)}</ExternalLink>
+          <ExternalLink href={getExplorerAddressLink(cell.owner.id, chainId)}>
+            {shortenAddress(cell.owner.id)}
+          </ExternalLink>
         </div>
       ) : (
         <div className="p-2">
