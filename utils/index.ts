@@ -1,5 +1,4 @@
 import { ChainId } from "@usedapp/core";
-import { Cell } from "../types";
 
 export function getPxlGenAddress(chain: ChainId): string {
   let address = "";

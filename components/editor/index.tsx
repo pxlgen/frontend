@@ -3,7 +3,6 @@ import ToolBox from "./toolbox";
 import Palette from "./palette";
 import { useEthers, addressEqual } from "@usedapp/core";
 import { useSingleCell, useCanvasEditor } from "../../hooks";
-import { Cell } from "../../types";
 
 export default function EditorWithData(): JSX.Element {
   const { account } = useEthers();

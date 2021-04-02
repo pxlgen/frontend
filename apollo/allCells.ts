@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { CellToken } from "../types";
 
 interface CellData {
   cells: CellToken[];

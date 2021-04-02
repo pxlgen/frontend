@@ -2,7 +2,6 @@ import makeBlockie from "ethereum-blockies-base64";
 import { MdContentCopy } from "react-icons/md";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { IconContext } from "react-icons";
-import { IConnector, Wallet } from "../../types";
 import getErrorMessage from "./errors";
 import { getExplorerAddressLink, shortenAddress, getChainName, useEthers } from "@usedapp/core";
 import Image from "next/image";

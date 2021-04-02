@@ -3,7 +3,6 @@ import { useEthers } from "@usedapp/core";
 import { CellData, ALL_CELLS_QUERY } from "../apollo/allCells";
 import { useQuery } from "@apollo/client";
 import { useBaseURI } from "./useBaseURI";
-import { Cell, CellToken, CellMetadata } from "../types";
 import axios from "axios";
 import { getDefaultCell } from "../utils";
 

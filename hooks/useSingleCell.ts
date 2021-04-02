@@ -4,7 +4,6 @@ import { CellData, CellVars, SINGLE_CELL_QUERY } from "../apollo/singleCell";
 import { useLazyQuery } from "@apollo/client";
 import { useBaseURI } from "./useBaseURI";
 import { useRouter } from "next/router";
-import { Cell, CellMetadata, CellToken } from "../types";
 import axios from "axios";
 import { getDefaultCell } from "../utils";
 

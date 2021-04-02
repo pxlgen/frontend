@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import Popover from "react-popover";
 import { Link } from "../utils/link";
-import { Cell } from "../../types";
 import { getCoordinates } from "../../utils";
 import { ExternalLink } from "../utils/link";
 import { getExplorerAddressLink, shortenAddress, useEthers } from "@usedapp/core";

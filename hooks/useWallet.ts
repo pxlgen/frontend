@@ -3,7 +3,6 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { FrameConnector } from "@web3-react/frame-connector";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { useState } from "react";
-import { IConnector, Wallet } from "../types";
 
 const walletconnect = new WalletConnectConnector({
   rpc: { 4: "https://eth-rinkeby.alchemyapi.io/v2/X1Dc2c0kNbFr5yHQ_-1LE3Gk5Rp9iqgi" },

@@ -6,7 +6,6 @@ import { FaRedoAlt } from "react-icons/fa";
 import { FaSave } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { IconContext, IconType } from "react-icons";
-import { Tools } from "../../types";
 import Ripples from "react-ripples";
 
 interface Props {

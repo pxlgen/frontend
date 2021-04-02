@@ -1,6 +1,4 @@
 import { useState, useEffect, RefObject } from "react";
-import { Tools } from "../types";
-import { CanvasHistory } from "../types";
 
 const CANVAS_SIZE = 500; // 500 x 500
 const PIXELS = 50; // 50 x 50 grid
