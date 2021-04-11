@@ -1,6 +1,6 @@
 import { ChainId } from "@usedapp/core";
 
-export function getPxlGenAddress(chain: ChainId): string {
+export function getPxlGenAddress(chain: ChainId | undefined): string {
   let address = "";
   switch (chain) {
     case ChainId.Mainnet:
@@ -9,7 +9,6 @@ export function getPxlGenAddress(chain: ChainId): string {
       break;
     case 1337:
       address = process.env.NEXT_PUBLIC_PXLGEN_ADDRESS ?? "";
-    default:
       break;
   }
   return address;
@@ -26,7 +25,7 @@ export function getCoordinates(index: number): { x: number; y: number } {
 
 export function getDefaultCell(index: number): Cell {
   const { x, y } = getCoordinates(index);
-  let formattedIndex: string = `${index}`;
+  let formattedIndex = `${index}`;
   while (formattedIndex.length < 3) {
     formattedIndex = `0${formattedIndex}`;
   }
@@ -38,7 +37,7 @@ export function getDefaultCell(index: number): Cell {
     description: `This Cell is ${formattedIndex} of the 400 which make up the PxlGen canvas. This Cells coordinates are (${x}, ${y})`,
     image: `http://localhost:3000/images/${index}.png`,
     external_url: `http://localhost:3000/token/${index}`,
-    properties: [],
+    properties: { dataURL: "", rawData: [] },
     createdAt: 0,
     type: "Cell",
     owner: { id: "0x", totalOwned: 0, tokens: [] },

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
     "@apollo/client": "^3.3.11",
@@ -13,21 +14,26 @@
     "@popperjs/core": "^2.9.1",
     "@types/react-popover": "^0.5.3",
     "@types/selenium-webdriver": "^4.0.11",
-    "@usedapp/core": "^0.2.2",
+    "@usedapp/core": "^0.3.4",
     "@walletconnect/web3-provider": "^1.3.6",
     "@web3-react/frame-connector": "^6.0.9",
     "@web3-react/walletconnect-connector": "^6.1.9",
     "autoprefixer": "^10.2.4",
     "axios": "^0.21.1",
+    "dayjs": "^1.10.4",
     "ethereum-blockies-base64": "^1.0.2",
+    "ethers": "^5.1.0",
     "next": "^10.0.7",
+    "patch-package": "^6.4.7",
     "postcss": "^8.2.6",
+    "postinstall-postinstall": "^2.1.0",
     "react": "^17.0.1",
     "react-dom": "17.0.1",
     "react-icons": "^4.2.0",
     "react-popover": "^0.5.10",
     "react-popper": "^2.2.4",
     "react-ripples": "^2.2.1",
+    "react-toastify": "^7.0.3",
     "react-zoom-pan-pinch": "^1.6.1",
     "rsuite": "^4.9.2",
     "selenium-webdriver": "^4.0.0-beta.2",
@@ -38,6 +44,11 @@
   "devDependencies": {
     "@types/node": "^14.14.31",
     "@types/react": "^17.0.2",
-    "typescript": "^4.2.2"
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "eslint": "^7.24.0",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "typescript": "^4.2.4"
   }
 }

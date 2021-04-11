@@ -16,16 +16,16 @@ const coordStyle = {
 export default function Grid(): JSX.Element {
   const grids = [];
   for (let i = 1; i <= 400; i++) {
-    let lower = Math.floor(i / 20) * 20;
-    let upper = Math.ceil(i / 20) * 20;
+    const lower = Math.floor(i / 20) * 20;
+    const upper = Math.ceil(i / 20) * 20;
     let x = i - lower;
-    let y = upper / 20;
+    const y = upper / 20;
     if (x == 0) x = 20; // index: 400
     grids.push(<G key={i} i={i} x={x} y={y} />);
   }
   return <div>{grids}</div>;
 }
-function G({ i, x, y }) {
+function G({ i, x, y }: { i: number; x: number; y: number }) {
   const size = 17.5;
   const x_coord = x * 17.5 - size;
   const y_coord = y * 17.5 - size;
@@ -40,7 +40,7 @@ function G({ i, x, y }) {
 
           <defs>
             <pattern id="grid" width="17.5" height="17.5" patternUnits="userSpaceOnUse">
-              <path d="M 17.5 0 L 0 0 0 17.5" fill="none" stroke="black" stroke-width="1" />
+              <path d="M 17.5 0 L 0 0 0 17.5" fill="none" stroke="black" strokeWidth="1" />
             </pattern>
           </defs>
           <rect width="351" height="351" fill="url(#grid)" />

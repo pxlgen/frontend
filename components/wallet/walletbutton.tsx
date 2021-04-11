@@ -7,7 +7,7 @@ interface WalletButtonProps {
   togglePopover: () => void;
 }
 
-export default function WalletButton({ togglePopover }: WalletButtonProps) {
+export default function WalletButton({ togglePopover }: WalletButtonProps): JSX.Element {
   const { active, account } = useEthers();
   if (active && account) {
     return (

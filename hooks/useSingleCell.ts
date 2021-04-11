@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useEthers } from "@usedapp/core";
 import { CellData, CellVars, SINGLE_CELL_QUERY } from "../apollo/singleCell";
-import { useLazyQuery } from "@apollo/client";
+import { ApolloError, useLazyQuery } from "@apollo/client";
 import { useBaseURI } from "./useBaseURI";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -17,7 +17,7 @@ import { getDefaultCell } from "../utils";
 
 */
 
-export function useSingleCell() {
+export function useSingleCell(): { cell: Cell | undefined; loading: boolean; error: ApolloError | undefined } {
   const { chainId } = useEthers();
   const router = useRouter();
   const baseURI = useBaseURI(chainId);
@@ -37,18 +37,18 @@ export function useSingleCell() {
   useEffect(() => {
     if (cell || !index) return;
     setCell(getDefaultCell(index));
-  }, [index]);
+  }, [index, cell]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (data?.tokens.length && baseURI) {
         const result = await axios(baseURI + data.tokens[0].ipfsHash);
         const cellToken: CellToken = data?.tokens[0];
-        const metadata: CellMetadata = result.data;
+        const metadata = result.data as CellMetadata;
         setCell({ ...cellToken, ...metadata });
       }
     };
-    fetchData();
+    void fetchData();
   }, [data, baseURI]);
 
   if (error) console.log("Editor GQL ERR - SINGLE_CELL_QUERY:", error);

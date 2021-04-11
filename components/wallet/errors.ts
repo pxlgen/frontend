@@ -3,7 +3,7 @@ import { UserRejectedRequestError as UserRejectedRequestErrorFrame } from "@web3
 import { NoEthereumProviderError, UserRejectedRequestError } from "@web3-react/injected-connector";
 import { UnsupportedChainIdError } from "@web3-react/core";
 
-export default function getErrorMessage(error: Error) {
+export default function getErrorMessage(error: Error): string {
   console.log("Connection Error:", error);
   if (error instanceof NoEthereumProviderError) {
     return "No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.";
@@ -16,4 +16,5 @@ export default function getErrorMessage(error: Error) {
   ) {
     return "Please authorize this website to access your Ethereum account.";
   }
+  return "";
 }

@@ -1,64 +1,65 @@
-import React, { useState, useEffect, MouseEvent } from "react";
+import { useState, useEffect } from "react";
 import { FaPaintBrush } from "react-icons/fa";
 import { FaFill } from "react-icons/fa";
 import { FaUndoAlt } from "react-icons/fa";
 import { FaRedoAlt } from "react-icons/fa";
-import { FaSave } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
-import { IconContext, IconType } from "react-icons";
+import { FaSave } from "react-icons/fa";
+import { IconContext } from "react-icons";
 import Ripples from "react-ripples";
+import { usePxlGenFunction } from "../../hooks";
+import { useEthers, addressEqual } from "@usedapp/core";
+import type { Web3Provider } from "@ethersproject/providers";
+import { BigNumber } from "@ethersproject/bignumber";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 interface Props {
-  activeTool: number;
-  tools: Tools;
-  ownerConnected: boolean;
-  undo: () => void;
-  redo: () => void;
-  clear: () => void;
-  save: () => void;
-  setTool: React.Dispatch<React.SetStateAction<number>>;
+  cell: Cell;
+  actions: CanvasActions;
+  properties: CanvasProperties;
 }
-export default function ToolBox1({
-  activeTool,
-  tools,
-  undo,
-  redo,
-  clear,
-  save,
-  setTool,
-  ownerConnected,
-}: Props): JSX.Element {
+
+export default function ToolBox1({ cell, actions, properties }: Props): JSX.Element {
+  const { account, library } = useEthers();
+
+  const [ownerConnected, setOwnerConnected] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (cell.owner.id != "0x" && account) {
+      setOwnerConnected(addressEqual(cell.owner.id, account));
+    }
+  }, [cell.owner.id, account]);
   function isActive(tool: number) {
-    return activeTool == tool ? "text-blue-400 shadow-inner border border-blue-400 " : "text-gray-500";
+    return properties.tool == tool ? "text-blue-400 shadow-inner border border-blue-400 " : "text-gray-500";
   }
 
   return (
-    <div>
-      <div className="border w-1/2 flex justify-center rounded-lg shadow-md">
-        <div className=" w-full">
-          <ToolboxButton
-            title="Brush"
-            icon={<FaPaintBrush />}
-            style={`rounded-lg rounded-b-none ${isActive(tools.brush)}`}
-            action={() => setTool(tools.brush)}
-          />
-          <ToolboxButton
-            title="Bucket"
-            icon={<FaFill />}
-            style={`${isActive(tools.bucket)}`}
-            action={() => setTool(tools.bucket)}
-          />
-          <ToolboxButton title="Undo" icon={<FaUndoAlt />} style="text-gray-500" action={undo} />
-          <ToolboxButton title="Redo" icon={<FaRedoAlt />} style="text-gray-500" action={redo} />
-          <ToolboxButton title="Clear" icon={<FaTrash />} style="text-gray-500" action={clear} />
-          <ToolboxButton
-            title="Save"
-            icon={<FaSave />}
-            style="text-gray-500"
-            action={save}
-            disabled={!ownerConnected}
-          />
-        </div>
+    <div className="bg-white border w-32 flex justify-center rounded-lg shadow-md">
+      <div className="w-full">
+        <ToolboxButton
+          title="Brush"
+          icon={<FaPaintBrush />}
+          style={`rounded-lg rounded-b-none ${isActive(properties.TOOLS.brush)}`}
+          action={() => actions.setTool(properties.TOOLS.brush)}
+        />
+        {/* <BrushSizes /> */}
+
+        <ToolboxButton
+          title="Bucket"
+          icon={<FaFill />}
+          style={`${isActive(properties.TOOLS.bucket)}`}
+          action={() => actions.setTool(properties.TOOLS.bucket)}
+        />
+        <ToolboxButton title="Undo" icon={<FaUndoAlt />} style="text-gray-500" action={actions.undo} />
+        <ToolboxButton title="Redo" icon={<FaRedoAlt />} style="text-gray-500" action={actions.redo} />
+        <ToolboxButton title="Clear" icon={<FaTrash />} style="text-gray-500" action={actions.clear} />
+        {library && cell.id && ownerConnected && (
+          <SaveButton library={library} tokenId={cell.id} cell={cell} getCanvasData={actions.getCanvasData} />
+        )}
+        {(!library || !ownerConnected) && (
+          <ToolboxButton title="Save" icon={<FaSave />} style="text-gray-500" action={actions.clear} disabled={true} />
+        )}
       </div>
     </div>
   );
@@ -79,9 +80,9 @@ function ToolboxButton({ title, style, icon, disabled, action }: ToolboxButtonPr
         <button
           disabled={disabled}
           onClick={action}
-          className={`flex justify-center w-full py-2 ${title != "Save" ? "border-b" : ""} ${
-            disabled ? "text-gray-200" : "hover:bg-gray-100 hover:text-blue-400 "
-          }`}
+          className={`flex justify-center w-full py-2 ${title == "Brush" ? "rounded-lg" : ""} ${
+            title != "Save" ? "border-b" : ""
+          } ${disabled ? "text-gray-200" : "hover:bg-gray-100 hover:text-blue-400 "}`}
         >
           <IconContext.Provider value={{ className: "text-xl mr-4" }}>{icon}</IconContext.Provider>
           <span className="">{title}</span>
@@ -91,85 +92,53 @@ function ToolboxButton({ title, style, icon, disabled, action }: ToolboxButtonPr
   );
 }
 
-// function ToolboxButton2({ title, active, icon, action }: ToolboxButtonProps) {
-//   return (
-//     <button
-//       onClick={action}
-//       className={`flex w-28 h-8 m-2 float-left border rounded-md cursor-pointer hover:bg-gray-200 ${active()}`}
-//     >
-//       <div className="m-auto ">
-//         <IconContext.Provider value={{ className: "text-xl float-left mr-2" }}>{icon}</IconContext.Provider>
-//         {title}
-//       </div>
-//     </button>
-//   );
-// }
+interface SaveButtonProps {
+  tokenId: string;
+  library: Web3Provider;
+  cell: Cell;
+  getCanvasData: () => { img: string; array: string[][] };
+}
 
-// function ToolBox2({ activeTool, tools, undo, redo, clear, setTool }: Props): JSX.Element {
-//   function isActive(tool: number) {
-//     return activeTool == tool ? "bg-gray-400 text-gray-900" : "text-gray-500";
-//   }
+function SaveButton({ library, tokenId, cell, getCanvasData }: SaveButtonProps) {
+  const id = BigNumber.from(tokenId);
+  const { send } = usePxlGenFunction("updateTokenURI", library);
 
+  const saveArtwork = async () => {
+    const canvasData = getCanvasData();
+
+    const newMetadata: CellMetadata = {
+      name: cell.name,
+      description: cell.description,
+      image: cell.image,
+      external_url: cell.external_url,
+      properties: { dataURL: canvasData.img, rawData: canvasData.array },
+    };
+    toast("Starting processing");
+    const resp = await axios.post("http://localhost:3000/api/ipfs/", newMetadata);
+    const data = resp.data as { IpfsHash: string };
+    void send(id, data.IpfsHash);
+  };
+  return <ToolboxButton title="Save" icon={<FaSave />} style="text-gray-500" action={saveArtwork} />;
+}
+
+// function BrushSizes() {
 //   return (
-//     <div className="lg:w-28 lg:float-left cursor-pointer">
-//       <span
-//         onClick={() => setTool(tools.brush)}
-//         className={`box-border h-14 w-14 border border-r-0 border-gray-300 float-left pt-2 ${isActive(tools.brush)}`}
-//       >
-//         <IconContext.Provider value={{ className: "text-4xl  mx-auto align-middle" }}>
-//           <BiEditAlt />
-//         </IconContext.Provider>
-//       </span>
-//       <span
-//         onClick={() => setTool(tools.bucket)}
-//         className={`box-border h-14 w-14 border border-r-0 lg:border-r border-gray-300 float-left pt-2 ${isActive(
-//           tools.bucket
-//         )}`}
-//       >
-//         <IconContext.Provider value={{ className: "text-4xl mx-auto align-middle" }}>
-//           <RiPaintFill />
-//         </IconContext.Provider>
-//       </span>
-//       <span
-//         onClick={undo}
-//         className={`box-border h-14 w-14 border border-r-0  lg:border-t-0 border-gray-300 float-left pt-3 ${isActive(
-//           tools.undo
-//         )}`}
-//       >
-//         <IconContext.Provider value={{ className: "text-3xl mx-auto align-middle" }}>
-//           <FaUndoAlt />
-//         </IconContext.Provider>
-//       </span>
-//       <Ripples>
-//         <span
-//           onClick={redo}
-//           className={` box-border h-14 w-14 border lg:border-t-0 border-gray-300 float-left pt-3 ${isActive(
-//             tools.redo
-//           )}`}
-//         >
-//           <IconContext.Provider value={{ className: "text-3xl mx-auto align-middle" }}>
-//             <FaRedoAlt />
-//           </IconContext.Provider>
-//         </span>
+//     <div className=" rounded-lg absolute transform translate-x-44 -translate-y-10  text-gray-500 bg-white">
+//       <Ripples className="w-full rounded-lg rounded-b-none ">
+//         <button className={`flex justify-center w-full py-2 border-b hover:bg-gray-100 hover:text-blue-400 `}>
+//           <span className="">small</span>
+//         </button>
 //       </Ripples>
-
-//       <span
-//         onClick={clear}
-//         className={`box-border h-14 w-14 border border-r-0  lg:border-t-0 border-gray-300 float-left pt-3 ${isActive(
-//           tools.undo
-//         )}`}
-//       >
-//         <IconContext.Provider value={{ className: "text-3xl mx-auto align-middle" }}>
-//           <FaTrash />
-//         </IconContext.Provider>
-//       </span>
-//       <span
-//         className={`box-border h-14 w-14 border lg:border-t-0 border-gray-300 float-left pt-3 ${isActive(tools.redo)}`}
-//       >
-//         <IconContext.Provider value={{ className: "text-3xl mx-auto align-middle" }}>
-//           <FaSave />
-//         </IconContext.Provider>
-//       </span>
+//       <Ripples className="w-full">
+//         <button className={`flex justify-center w-full py-2 border-b  hover:bg-gray-100 hover:text-blue-400 `}>
+//           <span className="">medium</span>
+//         </button>
+//       </Ripples>
+//       <Ripples className="w-full rounded-lg rounded-t-none ">
+//         <button className={`flex justify-center w-full py-2 hover:bg-gray-100 hover:text-blue-400 `}>
+//           <span className="">large</span>
+//         </button>
+//       </Ripples>
 //     </div>
 //   );
 // }

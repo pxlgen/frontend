@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from "react";
-
 const colours = [
   "#000000ff",
   "#7f7f7fff",

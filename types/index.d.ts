@@ -20,7 +20,7 @@ declare global {
     description: string;
     image: string;
     external_url: string;
-    properties: [];
+    properties: { dataURL: string; rawData: string[][] };
   }
 
   export type Cell = CellToken & CellMetadata;
@@ -66,6 +66,7 @@ declare global {
     glide: (e: React.MouseEvent) => void;
     setGlide: React.Dispatch<React.SetStateAction<boolean>>;
     setTool: React.Dispatch<React.SetStateAction<number>>;
+    getCanvasData: () => { img: string; array: string[][] };
   }
 
   interface CanvasProperties {

@@ -1,55 +1,45 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import ToolBox from "./toolbox";
 import Palette from "./palette";
-import { useEthers, addressEqual } from "@usedapp/core";
+import { FaAngleLeft } from "react-icons/fa";
+import { IconContext } from "react-icons";
 import { useSingleCell, useCanvasEditor } from "../../hooks";
+import Link from "next/link";
 
 export default function EditorWithData(): JSX.Element {
-  const { account } = useEthers();
   const { cell, loading, error } = useSingleCell();
-  const [ownerConnected, setOwnerConnected] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (cell && cell.owner != "0x" && account) {
-      setOwnerConnected(addressEqual(cell.owner, account));
-    }
-  }, [cell, account]);
 
   if (error) return <div>{error}</div>;
   if (loading) return <div>Loading...</div>;
-  if (cell) return <Editor ownerConnected={ownerConnected} cell={cell} />;
+  if (cell) return <Editor cell={cell} />;
   return <></>;
 }
 
 interface EditorProps {
-  ownerConnected: boolean;
   cell: Cell;
 }
 
-function Editor({ ownerConnected, cell }: EditorProps): JSX.Element {
+function Editor({ cell }: EditorProps): JSX.Element {
   const canvas = useRef<HTMLCanvasElement>(null);
   const { actions, properties } = useCanvasEditor(canvas, cell.properties);
 
-  function saveOnChain() {
-    // canvas.current?.toBlob((x) => console.log(URL.createObjectURL(x)));
-    console.log(canvas.current?.toDataURL());
-  }
   return (
-    <div>
-      <div className="grid grid-cols-4 gap-4 m-5">
+    <div className="bg-gray-200 w-screen h-screen">
+      <div className="grid grid-cols-4 gap-4 p-5 ">
         <div className="col-span-4 lg:col-span-1 xl:col-span-1">
-          <ToolBox
-            activeTool={properties.tool}
-            tools={properties.TOOLS}
-            setTool={actions.setTool}
-            undo={actions.undo}
-            redo={actions.redo}
-            clear={actions.clear}
-            save={saveOnChain}
-            ownerConnected={ownerConnected}
-          />
-        </div>
+          <Link href={`/token/${cell.index}`}>
+            <a>
+              <button className="flex justify-center w-32 py-2 mb-4 border text-gray-500 bg-white border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100">
+                <IconContext.Provider value={{ className: "text-2xl mr-2   cursor-pointer " }}>
+                  <FaAngleLeft />
+                </IconContext.Provider>
+                <span>Exit</span>
+              </button>
+            </a>
+          </Link>
 
+          <ToolBox cell={cell} actions={actions} properties={properties} />
+        </div>
         <div className="col-span-4 lg:col-span-2 xl:col-span-2">
           <canvas
             onClick={actions.draw}

@@ -1,5 +1,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import Image from "next/image";
+
 const WalleButton = dynamic(
   () => {
     return import("./wallet");
@@ -9,11 +11,15 @@ const WalleButton = dynamic(
 
 export default function Header(): JSX.Element {
   return (
-    <div className="text-gray-900 mx-auto bg-gray-100 p-2 shadow-md">
-      <nav className="flex justify-between">
-        <div className="mx-4 text-gray-900 mt-1 text-2xl">
+    <div className="text-gray-900 mx-auto bg-gray-100 border-b p-1 border-gray-300 h-14">
+      <nav className="flex justify-between mt-0.5">
+        <div className="mx-4 text-gray-900 text-2xl">
           <Link href="/">
-            <a>PxlGen</a>
+            <a>
+              <div className="w-52 pt-1">
+                <Image src="/logos/pg.png" alt="Cell Image" width="700" height="122" />
+              </div>
+            </a>
           </Link>
         </div>
         <div className="w-full float-left m-auto pl-4 text-xl ">

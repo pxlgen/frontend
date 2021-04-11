@@ -5,60 +5,36 @@ import { getCoordinates } from "../../utils";
 import { ExternalLink } from "../utils/link";
 import { getExplorerAddressLink, shortenAddress, useEthers } from "@usedapp/core";
 
-const CANVAS_SIZE = 1000;
-const PIXELS = 50; // 50 x 50 grid
-let data: string[][] = [];
-let blankCanvas: string[][] = [...Array(PIXELS)].map((e) => Array(PIXELS).fill("#ffffffff"));
+const CANVAS_SIZE = 500;
 
 interface CellProps {
-  index: number;
   cell: Cell;
 }
 
-export default function CanvasCell({ index, cell }: CellProps) {
+export default function CanvasCell({ cell }: CellProps): JSX.Element {
   const [open, setOpen] = useState<boolean>(false);
   const [clickPosition, setClickPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [ctx, setCtx] = useState<CanvasRenderingContext2D>();
   const canvas = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    let ctx: CanvasRenderingContext2D;
-    ctx = canvas.current!.getContext("2d") as CanvasRenderingContext2D;
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    setCtx(ctx);
+    if (canvas.current) setCtx(canvas.current.getContext("2d") as CanvasRenderingContext2D);
   }, []);
 
-  // once context is loaded we can redraw the canvas
   useEffect(() => {
-    async function canvasData() {
-      if (cell) {
-        data = cell.properties.length > 0 ? cell.properties : blankCanvas;
-        redraw();
-      }
-    }
     if (ctx) {
-      canvasData();
-    }
-  }, [ctx]);
-
-  function redraw() {
-    if (data) {
-      for (let i = 0; i < PIXELS; i++) {
-        for (let j = 0; j < PIXELS; j++) {
-          fill(i, j, data[i][j]);
-        }
+      if (cell.properties.dataURL) {
+        const uimg = new Image();
+        uimg.src = cell.properties.dataURL;
+        uimg.onload = () => {
+          ctx.drawImage(uimg, 0, 0);
+        };
+      } else {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
       }
     }
-  }
-
-  function fill(x: number, y: number, colourOveride?: string) {
-    if (ctx != undefined) {
-      ctx.fillStyle = colourOveride ? colourOveride : "white";
-      data[x][y] = colourOveride ? colourOveride : "white";
-      ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
-    }
-  }
+  }, [ctx, cell.properties.dataURL]);
 
   const mouseDownCoords = (e: React.MouseEvent): void => {
     setClickPosition({ x: e.pageX, y: e.pageY });
@@ -87,8 +63,9 @@ export default function CanvasCell({ index, cell }: CellProps) {
           <canvas
             ref={canvas}
             className={`crisp-rendering ${open ? "border-gray-400 border" : ""}`}
-            width={50}
-            height={50}
+            width={CANVAS_SIZE}
+            height={CANVAS_SIZE}
+            style={{ height: 50, width: 50 }}
           ></canvas>
         </div>
       </Popover>
@@ -114,7 +91,7 @@ const PopoverContent = ({ cell }: PopoverContentProps) => {
       {chainId && cell.owner.id != "0x" ? (
         <div className="p-2">
           <span className="font-medium">Owner: </span>
-          <ExternalLink href={getExplorerAddressLink(cell.owner.id, chainId)}>
+          <ExternalLink href={getExplorerAddressLink(cell.owner.id, chainId) ?? ""}>
             {shortenAddress(cell.owner.id)}
           </ExternalLink>
         </div>

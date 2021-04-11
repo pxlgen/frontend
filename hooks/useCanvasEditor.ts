@@ -1,16 +1,19 @@
 import { useState, useEffect, RefObject } from "react";
 
 const CANVAS_SIZE = 500; // 500 x 500
-const PIXELS = 50; // 50 x 50 grid
-const PIXEL_SIZE = 10; // PIXELS * PIXEL_SIZE = CANVAS_SIZE
-const BLANK_CANVAS: string[][] = [...Array(PIXELS)].map((e) => Array(PIXELS).fill("#ffffffff"));
+const PIXELS = 100; // 50 x 50 grid
+const PIXEL_SIZE = 5; // PIXELS * PIXEL_SIZE = CANVAS_SIZE
+const BLANK_CANVAS = [...(Array(PIXELS) as [])].map(() => Array(PIXELS).fill("#ffffffff") as []) as string[][];
 
 const TOOLS: Tools = {
   brush: 0,
   bucket: 1,
 };
 
-export function useCanvasEditor(canvas: RefObject<HTMLCanvasElement>, properties: []) {
+export function useCanvasEditor(
+  canvas: RefObject<HTMLCanvasElement>,
+  properties: { dataURL: string; rawData: string[][] }
+): { actions: CanvasActions; properties: CanvasProperties } {
   const [colour, setColour] = useState<string>("#000000ff");
   const [canvasData, setCanvasData] = useState<string[][]>(BLANK_CANVAS);
   const [history, setHistory] = useState<CanvasHistory>({ undo: [], redo: [] });
@@ -23,10 +26,18 @@ export function useCanvasEditor(canvas: RefObject<HTMLCanvasElement>, properties
   }, [canvas]);
 
   useEffect(() => {
-    // const item = localStorage.getItem("canvas-data");
-    if (properties.length) setCanvasData(properties);
     redraw();
   }, [ctx]);
+
+  useEffect(() => {
+    if (properties.rawData.length) {
+      setCanvasData(properties.rawData);
+    }
+  }, [properties]);
+
+  useEffect(() => {
+    redraw();
+  }, [canvasData]);
 
   function draw(e: React.MouseEvent<HTMLElement>) {
     if (tool == TOOLS.brush) brush(e);
@@ -41,12 +52,6 @@ export function useCanvasEditor(canvas: RefObject<HTMLCanvasElement>, properties
         }
       }
     }
-
-    // let img = new Image();
-    // img.setAttribute("src", canvasData);
-    // img.addEventListener("load", function () {
-    //   ctx.drawImage(img, 0, 0);
-    // });
   }
 
   function glide(e: React.MouseEvent) {
@@ -58,7 +63,7 @@ export function useCanvasEditor(canvas: RefObject<HTMLCanvasElement>, properties
   function brush(e: React.MouseEvent) {
     const { x, y } = coordinates(e);
     if (canvasData[x][y] != colour) {
-      let h = history;
+      const h = history;
       h.undo.push({ x, y, oldColour: canvasData[x][y], newColour: colour });
       setHistory(h);
       fill(x, y);
@@ -67,7 +72,7 @@ export function useCanvasEditor(canvas: RefObject<HTMLCanvasElement>, properties
   }
 
   function undo() {
-    let h = history;
+    const h = history;
     const lastItem = h.undo.pop();
     if (lastItem) {
       h.redo.push(lastItem);
@@ -76,7 +81,7 @@ export function useCanvasEditor(canvas: RefObject<HTMLCanvasElement>, properties
     setHistory(h);
   }
   function redo() {
-    let h = history;
+    const h = history;
     const lastItem = h.redo.pop();
     setHistory(h);
     if (typeof lastItem !== "undefined") {
@@ -95,13 +100,13 @@ export function useCanvasEditor(canvas: RefObject<HTMLCanvasElement>, properties
 
   function bucket(e: React.MouseEvent<HTMLElement>) {
     const { x, y } = coordinates(e);
-    let checked: { [key: string]: boolean } = {};
+    const checked: { [key: string]: boolean } = {};
     const filler = (x: number, y: number, target: string) => {
       if (withinBounds(x, y) && !checked[`${x},${y}`]) {
         checked[`${x},${y}`] = true;
         // if cell is colour of target and not colour of fill colour then fill
         if (canvasData[x][y] == target && canvasData[x][y] != colour) {
-          let h = history;
+          const h = history;
           h.undo.push({ x, y, oldColour: canvasData[x][y], newColour: colour });
           setHistory(h);
           fill(x, y);
@@ -125,15 +130,16 @@ export function useCanvasEditor(canvas: RefObject<HTMLCanvasElement>, properties
   }
 
   function coordinates(e: React.MouseEvent) {
-    var canvasInfo = canvas.current!.getBoundingClientRect(); // canvas stats
+    const canvasInfo = canvas.current!.getBoundingClientRect(); // canvas stats
     // coordinates on the 550 x 550 grid
-    var x = e.clientX - canvasInfo.left;
-    var y = e.clientY - canvasInfo.top;
-    if (x >= 500) x = 499; // hack to avoid getting x coord of 50
+    let x = e.clientX - canvasInfo.left - 1;
+    let y = e.clientY - canvasInfo.top;
+    // hack to avoid getting x coord of 50
     // translate the coordinates to 50 x 50 grid
     x = Math.floor((PIXELS * x) / canvas.current!.clientWidth);
     y = Math.floor((PIXELS * y) / canvas.current!.clientHeight);
-
+    if (x < 0) x = 0;
+    if (x >= 500) x = 499;
     return { x, y };
   }
 
@@ -145,14 +151,19 @@ export function useCanvasEditor(canvas: RefObject<HTMLCanvasElement>, properties
     localStorage.setItem("canvas-data", JSON.stringify(canvasData));
   }
 
+  function getCanvasData(): { img: string; array: string[][] } {
+    const img = canvas.current?.toDataURL("image/png") ?? "";
+    return { img, array: canvasData };
+  }
+
   function saveCanvasData(x: number, y: number, colour: string) {
-    let c = canvasData;
+    const c = canvasData;
     c[x][y] = colour;
     setCanvasData(c);
   }
 
   return {
-    actions: { draw, undo, redo, clear, setColour, glide, setGlide, setTool },
+    actions: { draw, undo, redo, clear, setColour, glide, setGlide, setTool, getCanvasData },
     properties: { tool, CANVAS_SIZE, colour, TOOLS },
   };
 }

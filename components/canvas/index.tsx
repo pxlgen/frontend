@@ -3,7 +3,7 @@ import Cell from "./cell";
 import { useEffect, useState } from "react";
 import { useAllCells } from "../../hooks";
 import Controls from "./controls";
-let coords = [
+const coords = [
   "01",
   "02",
   "03",
@@ -32,7 +32,7 @@ export default function Canvas(): JSX.Element {
 
   useEffect(() => {
     if (cells) {
-      setCellComponents(cells.map((c, i) => <Cell key={i} index={c.index} cell={c} />));
+      setCellComponents(cells.map((c, i) => <Cell key={i} cell={c} />));
     }
     document.body.style.overflow = "hidden";
   }, [cells]);
@@ -58,7 +58,12 @@ export default function Canvas(): JSX.Element {
           resetTransform,
         }) => (
           <div>
-            <Controls zoomIn={(e) => zoomIn(e)} zoomOut={(e) => zoomOut(e)} resetTransform={(e) => resetTransform(e)} />
+            <Controls
+              /* eslint-disable */
+              zoomIn={(e) => zoomIn(e)}
+              zoomOut={(e) => zoomOut(e)}
+              resetTransform={(e) => resetTransform(e)}
+            />
             <TransformComponent>
               <div className="grid-container">
                 <div className="grid grid-flow-col x-coords text-gray-400">

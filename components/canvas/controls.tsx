@@ -10,7 +10,7 @@ interface CanvasControlsProps {
   resetTransform: (e: MouseEvent) => void;
 }
 
-export default function CanvasControls({ zoomIn, zoomOut, resetTransform }: CanvasControlsProps) {
+export default function CanvasControls({ zoomIn, zoomOut, resetTransform }: CanvasControlsProps): JSX.Element {
   return (
     <div className="flex pl-5 shadow-md text-gray-700 font-light bg-gray-200">
       <ControlButton action={(e) => zoomIn(e)}>
