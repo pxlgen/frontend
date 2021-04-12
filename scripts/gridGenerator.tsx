@@ -29,14 +29,22 @@ function G({ i, x, y }: { i: number; x: number; y: number }) {
   const size = 17.5;
   const x_coord = x * 17.5 - size;
   const y_coord = y * 17.5 - size;
+  let formattedX: string = `${x}`;
+  while (formattedX.length < 2) {
+    formattedX = `0${formattedX}`;
+  }
+  let formattedY: string = `${y}`;
+  while (formattedY.length < 2) {
+    formattedY = `0${formattedY}`;
+  }
   return (
     <div style={{ padding: 50 }}>
       <div id={`grid_${i}`} style={containerStyle}>
         <div style={coordStyle}>
-          📍 ({x}, {y})
+          📍 ({formattedX}, {formattedY})
         </div>
         <svg style={gridStyle} className="mx-auto" width="350.5" height="350.5" xmlns="http://www.w3.org/2000/svg">
-          <image href="/grid_watermark.png" width="351" height="351" />
+          <image href="/pxlgen_watermark.png" width="351" height="351" className="opacity-20" />
 
           <defs>
             <pattern id="grid" width="17.5" height="17.5" patternUnits="userSpaceOnUse">

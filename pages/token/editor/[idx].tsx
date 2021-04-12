@@ -1,10 +1,17 @@
+import Head from "next/head";
 import Layout from "../../../components/layout";
 import Editor from "../../../components/editor";
 
-export default function Palette(): JSX.Element {
+export default function TokenEditorPage(): JSX.Element {
   return (
-    <Layout>
-      <Editor />
-    </Layout>
+    <div>
+      <Head>
+        <title>PxlGen - Token Editor</title>
+        <link rel="icon" href="/favicon.png" />
+      </Head>
+      <Layout>
+        <Editor />
+      </Layout>
+    </div>
   );
 }
