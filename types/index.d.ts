@@ -4,9 +4,9 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 
 declare global {
   ///////////////////////////
-  //// Cell Types
+  //// Plot Types
   ///////////////////////////
-  export interface CellToken {
+  export interface PlotToken {
     id: string;
     index: number;
     ipfsHash: string;
@@ -15,7 +15,7 @@ declare global {
     type: string;
   }
 
-  export interface CellMetadata {
+  export interface PlotMetadata {
     name: string;
     description: string;
     image: string;
@@ -23,7 +23,7 @@ declare global {
     properties: { dataURL: string; rawData: string[][] };
   }
 
-  export type Cell = CellToken & CellMetadata;
+  export type Plot = PlotToken & PlotMetadata;
 
   export interface Owner {
     id: string;

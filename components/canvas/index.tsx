@@ -1,7 +1,7 @@
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch/dist";
-import Cell from "./cell";
+import Plot from "./plot";
 import { useEffect, useState } from "react";
-import { useAllCells } from "../../hooks";
+import { useAllPlots } from "../../hooks";
 import Controls from "./controls";
 const coords = [
   "01",
@@ -27,15 +27,15 @@ const coords = [
 ];
 
 export default function Canvas(): JSX.Element {
-  const { cells, loading, error } = useAllCells();
-  const [cellComponents, setCellComponents] = useState<JSX.Element[]>();
+  const { plots, loading, error } = useAllPlots();
+  const [plotComponents, setPlotComponents] = useState<JSX.Element[]>();
 
   useEffect(() => {
-    if (cells) {
-      setCellComponents(cells.map((c, i) => <Cell key={i} cell={c} />));
+    if (plots) {
+      setPlotComponents(plots.map((c, i) => <Plot key={i} plot={c} />));
     }
     document.body.style.overflow = "hidden";
-  }, [cells]);
+  }, [plots]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -81,7 +81,7 @@ export default function Canvas(): JSX.Element {
                   ))}
                 </div>
 
-                <div className="float-left canvas-container">{cellComponents}</div>
+                <div className="float-left canvas-container">{plotComponents}</div>
               </div>
             </TransformComponent>
           </div>

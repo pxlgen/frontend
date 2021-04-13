@@ -104,7 +104,7 @@ export function useCanvasEditor(
     const filler = (x: number, y: number, target: string) => {
       if (withinBounds(x, y) && !checked[`${x},${y}`]) {
         checked[`${x},${y}`] = true;
-        // if cell is colour of target and not colour of fill colour then fill
+        // if plot is colour of target and not colour of fill colour then fill
         if (canvasData[x][y] == target && canvasData[x][y] != colour) {
           const h = history;
           h.undo.push({ x, y, oldColour: canvasData[x][y], newColour: colour });

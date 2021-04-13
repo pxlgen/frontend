@@ -17,7 +17,7 @@ export default function Header(): JSX.Element {
           <Link href="/">
             <a>
               <div className="w-52 pt-1">
-                <Image src="/logos/header_logo.png" alt="Cell Image" width="700" height="122" />
+                <Image src="/logos/header_logo.png" alt="Plot Image" width="700" height="122" />
               </div>
             </a>
           </Link>
