@@ -6,19 +6,21 @@ import { useApollo } from "../hooks";
 import { DAppProvider, MULTICALL_ADDRESSES } from "@usedapp/core";
 import { ToastContainer } from "react-toastify";
 
+let readOnlyChainId;
+if (process.env.NODE_ENV === "development") {
+  readOnlyChainId = 1337;
+} else {
+  readOnlyChainId = 4;
+}
+
 const config = {
-  readOnlyChainId: 1337,
+  readOnlyChainId,
   readOnlyUrls: {
     1337: "http://localhost:8545",
+    4: process.env.ALCHEMY_RINKEBY_API_KEY,
   },
   multicallAddresses: { 1337: process.env.NEXT_PUBLIC_LOCAL_MULTICALL_ADDRESS, ...MULTICALL_ADDRESSES },
 };
-console.log("process.env.NEXT_PUBLIC_LOCAL_MULTICALL_ADDRESS", process.env.NEXT_PUBLIC_LOCAL_MULTICALL_ADDRESS);
-
-// // temporarily force client side rendering
-// function SafeHydrate({ children }) {
-//   return <div suppressHydrationWarning>{typeof window === "undefined" ? null : children}</div>;
-// }
 
 function MyApp({ Component, pageProps }) {
   const apolloClient = useApollo(pageProps.initialApolloState);
