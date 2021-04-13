@@ -6,11 +6,14 @@ import { useApollo } from "../hooks";
 import { DAppProvider, MULTICALL_ADDRESSES } from "@usedapp/core";
 import { ToastContainer } from "react-toastify";
 
+let chainid = process.env.NEXT_PUBLIC_ACTIVE_CHAINID;
+let rinkebyRpc = process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_API_KEY;
+
 const config = {
-  readOnlyChainId: process.env.NEXT_PUBLIC_ACTIVE_CHAINID,
+  readOnlyChainId: parseInt(chainid),
   readOnlyUrls: {
     1337: "http://localhost:8545",
-    4: process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_API_KEY,
+    4: rinkebyRpc,
   },
   multicallAddresses: { 1337: process.env.NEXT_PUBLIC_LOCAL_MULTICALL_ADDRESS, ...MULTICALL_ADDRESSES },
 };
