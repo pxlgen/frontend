@@ -1,6 +1,6 @@
 module.exports = {
   images: {
-    domains: ["localhost"],
+    domains: ["localhost", "rinkeby.pxlgen.io", "pxlgen.io"],
   },
   future: {
     webpack5: true,
