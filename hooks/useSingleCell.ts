@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import { useEthers } from "@usedapp/core";
 import { CellData, CellVars, SINGLE_CELL_QUERY } from "../apollo/singleCell";
 import { ApolloError, useLazyQuery } from "@apollo/client";
-import { useBaseURI } from "./useBaseURI";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { getDefaultCell } from "../utils";
@@ -18,9 +16,8 @@ import { getDefaultCell } from "../utils";
 */
 
 export function useSingleCell(): { cell: Cell | undefined; loading: boolean; error: ApolloError | undefined } {
-  const { chainId } = useEthers();
   const router = useRouter();
-  const baseURI = useBaseURI(chainId);
+  const baseURI = process.env.NEXT_PUBLIC_BASE_URI ?? "";
   const [index, setIndex] = useState<number>();
   const [cell, setCell] = useState<Cell>();
 

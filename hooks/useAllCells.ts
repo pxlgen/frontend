@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
-import { useEthers } from "@usedapp/core";
 import { CellData, ALL_CELLS_QUERY } from "../apollo/allCells";
 import { ApolloError, useQuery } from "@apollo/client";
-import { useBaseURI } from "./useBaseURI";
 import axios from "axios";
 import { getDefaultCell } from "../utils";
 
 export function useAllCells(): { cells: Cell[] | undefined; loading: boolean; error: ApolloError | undefined } {
-  const { chainId } = useEthers();
-  const baseURI = useBaseURI(chainId);
+  const baseURI = process.env.NEXT_PUBLIC_BASE_URI ?? "";
   const [cells, setCells] = useState<Cell[]>();
   const { error, data } = useQuery<CellData>(ALL_CELLS_QUERY, {});
 
