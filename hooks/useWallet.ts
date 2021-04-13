@@ -5,12 +5,13 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { useEffect, useState } from "react";
 
 let alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_API_KEY ?? "";
+let activeChain = parseInt(process.env.NEXT_PUBLIC_ACTIVE_CHAINID ?? "1");
 
 const walletconnect = new WalletConnectConnector({
   rpc: { 4: alchemyKey },
 });
-const injected = new InjectedConnector({ supportedChainIds: [4, 1337] });
-const frame = new FrameConnector({ supportedChainIds: [4, 1337] });
+const injected = new InjectedConnector({ supportedChainIds: [activeChain] });
+const frame = new FrameConnector({ supportedChainIds: [activeChain] });
 
 const wallets: Wallet[] = [
   {
