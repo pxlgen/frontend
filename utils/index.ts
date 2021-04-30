@@ -23,7 +23,7 @@ export function getCoordinates(index: number): { x: number; y: number } {
   return { x, y };
 }
 
-export function getDefaultCell(index: number): Cell {
+export function getDefaultPlot(index: number): Plot {
   const { x, y } = getCoordinates(index);
   let formattedIndex = `${index}`;
   while (formattedIndex.length < 3) {
@@ -33,13 +33,13 @@ export function getDefaultCell(index: number): Cell {
     id: "0x00",
     index: index,
     ipfsHash: `QmbJbiKnRhfZmTQU6Uh8jHPfVGJ2Uvj4Gu6QiwKJShcnGP/${index}.json`,
-    name: `PxlGen Cell ${formattedIndex}`,
-    description: `This Cell is ${formattedIndex} of the 400 which make up the PxlGen canvas. This Cells coordinates are (${x}, ${y})`,
-    image: `http://localhost:3000/images/${index}.png`,
-    external_url: `http://localhost:3000/token/${index}`,
+    name: `PxlGen Plot ${formattedIndex}`,
+    description: `This Plot is ${formattedIndex} of the 400 which make up the PxlGen canvas. This Plots coordinates are (${x}, ${y})`,
+    image: `${process.env.NEXT_PUBLIC_DOMAIN!}/images/${index}.png`,
+    external_url: `${process.env.NEXT_PUBLIC_DOMAIN!}/token/${index}`,
     properties: { dataURL: "", rawData: [] },
     createdAt: 0,
-    type: "Cell",
+    type: "Plot",
     owner: { id: "0x", totalOwned: 0, tokens: [] },
   };
 }

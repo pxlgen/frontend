@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const metadata = req.body as CellMetadata;
+  const metadata = req.body as PlotMetadata;
   const body = {
     pinataMetadata: {
       name: metadata.name,

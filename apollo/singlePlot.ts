@@ -1,15 +1,15 @@
 import { gql } from "@apollo/client";
 
-interface CellData {
-  tokens: CellToken[];
+interface PlotData {
+  tokens: PlotToken[];
 }
 
-interface CellVars {
+interface PlotVars {
   index: number | undefined;
 }
 
-const SINGLE_CELL_QUERY = gql`
-  query Cell($index: Int!) {
+const SINGLE_PLOT_QUERY = gql`
+  query Plot($index: Int!) {
     tokens(where: { index: $index }) {
       id
       ipfsHash
@@ -22,5 +22,5 @@ const SINGLE_CELL_QUERY = gql`
   }
 `;
 
-export { SINGLE_CELL_QUERY };
-export type { CellData, CellVars };
+export { SINGLE_PLOT_QUERY };
+export type { PlotData, PlotVars };

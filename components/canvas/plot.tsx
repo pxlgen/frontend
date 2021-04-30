@@ -7,11 +7,11 @@ import { getExplorerAddressLink, shortenAddress, useEthers } from "@usedapp/core
 
 const CANVAS_SIZE = 500;
 
-interface CellProps {
-  cell: Cell;
+interface PlotProps {
+  plot: Plot;
 }
 
-export default function CanvasCell({ cell }: CellProps): JSX.Element {
+export default function CanvasPlot({ plot }: PlotProps): JSX.Element {
   const [open, setOpen] = useState<boolean>(false);
   const [clickPosition, setClickPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [ctx, setCtx] = useState<CanvasRenderingContext2D>();
@@ -23,9 +23,9 @@ export default function CanvasCell({ cell }: CellProps): JSX.Element {
 
   useEffect(() => {
     if (ctx) {
-      if (cell.properties.dataURL) {
+      if (plot.properties.dataURL) {
         const uimg = new Image();
-        uimg.src = cell.properties.dataURL;
+        uimg.src = plot.properties.dataURL;
         uimg.onload = () => {
           ctx.drawImage(uimg, 0, 0);
         };
@@ -34,7 +34,7 @@ export default function CanvasCell({ cell }: CellProps): JSX.Element {
         ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
       }
     }
-  }, [ctx, cell.properties.dataURL]);
+  }, [ctx, plot.properties.dataURL]);
 
   const mouseDownCoords = (e: React.MouseEvent): void => {
     setClickPosition({ x: e.pageX, y: e.pageY });
@@ -53,7 +53,7 @@ export default function CanvasCell({ cell }: CellProps): JSX.Element {
 
   return (
     <div id="pop">
-      <Popover isOpen={open} body={<PopoverContent cell={cell} />} onOuterAction={() => setOpen(false)}>
+      <Popover isOpen={open} body={<PopoverContent plot={plot} />} onOuterAction={() => setOpen(false)}>
         <div
           onMouseDown={mouseDownCoords}
           onMouseUp={clickOrDrag}
@@ -74,25 +74,25 @@ export default function CanvasCell({ cell }: CellProps): JSX.Element {
 }
 
 interface PopoverContentProps {
-  cell: Cell;
+  plot: Plot;
 }
 
-const PopoverContent = ({ cell }: PopoverContentProps) => {
+const PopoverContent = ({ plot }: PopoverContentProps) => {
   const { chainId } = useEthers();
-  const { x, y } = getCoordinates(cell.index);
-  if (chainId) console.log(getExplorerAddressLink(cell.owner.id, chainId));
+  const { x, y } = getCoordinates(plot.index);
+  if (chainId) console.log(getExplorerAddressLink(plot.owner.id, chainId));
 
   return (
     <div className="w-60 p-2 bg-gray-100 text-black border border-gray-400 rounded-md">
-      <div className="font-semibold border-b p-2">{cell.name}</div>
+      <div className="font-semibold border-b p-2">{plot.name}</div>
       <div className="p-2">
         <span className="font-medium">Coordinates: </span>📍 ({x}, {y})
       </div>
-      {chainId && cell.owner.id != "0x" ? (
+      {chainId && plot.owner.id != "0x" ? (
         <div className="p-2">
           <span className="font-medium">Owner: </span>
-          <ExternalLink href={getExplorerAddressLink(cell.owner.id, chainId) ?? ""}>
-            {shortenAddress(cell.owner.id)}
+          <ExternalLink href={getExplorerAddressLink(plot.owner.id, chainId) ?? ""}>
+            {shortenAddress(plot.owner.id)}
           </ExternalLink>
         </div>
       ) : (
@@ -102,7 +102,7 @@ const PopoverContent = ({ cell }: PopoverContentProps) => {
         </div>
       )}
       <div className="w-full text-center mt-4">
-        <Link href={`/token/${cell.index}`}>View Cell</Link>
+        <Link href={`/token/${plot.index}`}>View Plot</Link>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
-export * from "./useAllCells";
-export * from "./useSingleCell";
+export * from "./useAllPlots";
+export * from "./useSinglePlot";
 export * from "./useApollo";
 export * from "./useWallet";
 export * from "./useCanvasEditor";

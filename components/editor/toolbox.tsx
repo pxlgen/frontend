@@ -15,21 +15,21 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 interface Props {
-  cell: Cell;
+  plot: Plot;
   actions: CanvasActions;
   properties: CanvasProperties;
 }
 
-export default function ToolBox1({ cell, actions, properties }: Props): JSX.Element {
+export default function ToolBox1({ plot, actions, properties }: Props): JSX.Element {
   const { account, library } = useEthers();
 
   const [ownerConnected, setOwnerConnected] = useState<boolean>(false);
 
   useEffect(() => {
-    if (cell.owner.id != "0x" && account) {
-      setOwnerConnected(addressEqual(cell.owner.id, account));
+    if (plot.owner.id != "0x" && account) {
+      setOwnerConnected(addressEqual(plot.owner.id, account));
     }
-  }, [cell.owner.id, account]);
+  }, [plot.owner.id, account]);
   function isActive(tool: number) {
     return properties.tool == tool ? "text-blue-400 shadow-inner border border-blue-400 " : "text-gray-500";
   }
@@ -54,8 +54,8 @@ export default function ToolBox1({ cell, actions, properties }: Props): JSX.Elem
         <ToolboxButton title="Undo" icon={<FaUndoAlt />} style="text-gray-500" action={actions.undo} />
         <ToolboxButton title="Redo" icon={<FaRedoAlt />} style="text-gray-500" action={actions.redo} />
         <ToolboxButton title="Clear" icon={<FaTrash />} style="text-gray-500" action={actions.clear} />
-        {library && cell.id && ownerConnected && (
-          <SaveButton library={library} tokenId={cell.id} cell={cell} getCanvasData={actions.getCanvasData} />
+        {library && plot.id && ownerConnected && (
+          <SaveButton library={library} tokenId={plot.id} plot={plot} getCanvasData={actions.getCanvasData} />
         )}
         {(!library || !ownerConnected) && (
           <ToolboxButton title="Save" icon={<FaSave />} style="text-gray-500" action={actions.clear} disabled={true} />
@@ -95,26 +95,26 @@ function ToolboxButton({ title, style, icon, disabled, action }: ToolboxButtonPr
 interface SaveButtonProps {
   tokenId: string;
   library: Web3Provider;
-  cell: Cell;
+  plot: Plot;
   getCanvasData: () => { img: string; array: string[][] };
 }
 
-function SaveButton({ library, tokenId, cell, getCanvasData }: SaveButtonProps) {
+function SaveButton({ library, tokenId, plot, getCanvasData }: SaveButtonProps) {
   const id = BigNumber.from(tokenId);
   const { send } = usePxlGenFunction("updateTokenURI", library);
 
   const saveArtwork = async () => {
     const canvasData = getCanvasData();
 
-    const newMetadata: CellMetadata = {
-      name: cell.name,
-      description: cell.description,
-      image: cell.image,
-      external_url: cell.external_url,
+    const newMetadata: PlotMetadata = {
+      name: plot.name,
+      description: plot.description,
+      image: plot.image,
+      external_url: plot.external_url,
       properties: { dataURL: canvasData.img, rawData: canvasData.array },
     };
-    toast("Starting processing");
-    const resp = await axios.post("http://localhost:3000/api/ipfs/", newMetadata);
+    toast("Processing");
+    const resp = await axios.post(`${process.env.NEXT_PUBLIC_DOMAIN!}/api/ipfs/`, newMetadata);
     const data = resp.data as { IpfsHash: string };
     void send(id, data.IpfsHash);
   };
