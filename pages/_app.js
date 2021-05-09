@@ -5,6 +5,8 @@ import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../hooks";
 import { DAppProvider, MULTICALL_ADDRESSES } from "@usedapp/core";
 import { ToastContainer } from "react-toastify";
+import { useRouter } from "next/router";
+import { initGA, logPageView } from "../utils/analytics";
 
 let chainid = process.env.NEXT_PUBLIC_ACTIVE_CHAINID;
 let rinkebyRpc = process.env.NEXT_PUBLIC_ALCHEMY_RINKEBY_API_KEY;
@@ -20,6 +22,22 @@ const config = {
 
 function MyApp({ Component, pageProps }) {
   const apolloClient = useApollo(pageProps.initialApolloState);
+  const router = useRouter();
+
+  useEffect(() => {
+    initGA();
+    if (!router.asPath.includes("?")) {
+      logPageView();
+    }
+  }, []);
+
+  useEffect(() => {
+    router.events.on("routeChangeComplete", logPageView);
+    return () => {
+      router.events.off("routeChangeComplete", logPageView);
+    };
+  }, [router.events]);
+
   return (
     <DAppProvider config={config}>
       <ApolloProvider client={apolloClient}>
