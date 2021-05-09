@@ -1,11 +1,13 @@
 import "tailwindcss/tailwind.css";
 import "../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import Head from "next/head";
 import { ApolloProvider } from "@apollo/client";
-import { useApollo } from "../hooks";
 import { DAppProvider, MULTICALL_ADDRESSES } from "@usedapp/core";
 import { ToastContainer } from "react-toastify";
-import { useRouter } from "next/router";
+import { useApollo } from "../hooks";
 import { initGA, logPageView } from "../utils/analytics";
 
 let chainid = process.env.NEXT_PUBLIC_ACTIVE_CHAINID;
